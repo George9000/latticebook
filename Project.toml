@@ -1,0 +1,18 @@
+name = "latticebook"
+uuid = "abc34531-249b-4ed4-aae3-9a1b3e1ca5de"
+version = "0.1.0"
+authors = ["George9000"]
+
+[deps]
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+Chain = "8be319e6-bccf-4806-a6f7-6fae938471bc"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+DataPipes = "02685ad9-2d12-40c3-9f73-c6aeda6a7ff5"
+RDatasets = "ce6b1742-4840-55fa-b093-852dadbb1d8b"
+
+[compat]
+CairoMakie = "0.12.18"
+Chain = "0.6.0"
+DataFrames = "1.7.0"
+DataPipes = "0.3.18"
+RDatasets = "0.7.7"
