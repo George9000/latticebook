@@ -1,9 +1,32 @@
 module latticebook
+
 using CairoMakie, DataFrames, Chain, DataPipes
 using RDatasets
 using RCall
+using FreqTables
 
+export explore
 export rfig11, rfig12, rfig13, rfig14
+export fig11v1, fig11v2
+
+const inch = 96
+const pt = 4 / 3
+const cm = inch / 2.54
+
+"""
+    explore()
+
+Convenience function for temporary exploration during development.
+"""
+function explore()
+    chem97 = dataset("mlmRev", "Chem97")
+    # names(chem97)
+    # freqtable(chem97, :Score)    # discrete
+    freqtable(chem97, :GCSEScore)  # continuous
+    # gc97 = groupby(chem97, :Score)
+    # combine(gc97, )
+end
+
 
 """
     rfig11()
@@ -70,7 +93,55 @@ function rfig14()
    """
 end
 
+"""
+    fig11v1()
 
+Generate fig11
+"""
+function fig11v1()
+    chem97 = dataset("mlmRev", "Chem97")
+    ptheme = Theme(; fontsize=8, fonts=(; regular="TheSansMonoCd Office"))
+    set_theme!(ptheme)
+    fig = Figure(; size=(6inch, 2.5inch))
+    ax = Axis(fig[1, 1]; title="GCSEScore Distribution")
+    density!(chem97.GCSEScore, color = (:blue, 0.3))
+    ax2 = Axis(fig[2, 1]; title="Chem Score Distribution", xticks = 0:2:10)
+    hist!(ax2, chem97.Score, strokecolor = :black)
+    set_theme!()
+    return save("figures/fig11v1.pdf", fig)
+end
 
+"""
+    fig11v2()
+
+Generate fig11
+"""
+function fig11v2()
+    chem97 = dataset("mlmRev", "Chem97")
+    gc97 = groupby(chem97, :Score)
+    gc97length = length(gc97)
+    kgc97 = keys(gc97)
+    gc97labels = [string(k.Score) for k in keys(gc97)]
+
+    ptheme = Theme(; fontsize=8, fonts=(; regular="TheSansMonoCd Office"))
+    set_theme!(ptheme)
+    fig = Figure()
+    for i in 1:gc97length
+        xlabel = (i == gc97length ? "GCSE Score" : "")
+        title = (i == 1 ? "Chem Score: "*gc97labels[i] : gc97labels[i])
+        xtvis = (i == gc97length ? true : false)
+        xt = (i == gc97length ? (0:2:8) : Float64[-1])
+        ax = Axis(fig[i, 1], title = title,
+                  titlealign= :left,
+                  limits = ((0,8), (0, 0.8)),
+                  xticks = xt, xticksvisible = xtvis,
+                  xlabel = xlabel)
+        density!(ax, gc97[kgc97[i]].GCSEScore)
+        (i == gc97length ? continue : hidedecorations!.(ax, grid=false))
+    end
+    rowgap!(fig.layout, 1)
+    set_theme!()
+    return save("figures/fig11v2.pdf", fig)
+end
 
 end # module latticebook
