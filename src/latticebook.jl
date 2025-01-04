@@ -1,9 +1,10 @@
 module latticebook
 
-using CairoMakie, DataFrames, Chain, DataPipes
+using CairoMakie, DataFrames, Chain, DataPipes, CategoricalArrays, Dates
 using RDatasets
 using RCall
 using FreqTables
+using Statistics
 
 export explore
 export rfig11, rfig12, rfig13, rfig14
@@ -13,20 +14,44 @@ const inch = 96
 const pt = 4 / 3
 const cm = inch / 2.54
 
+const chem97 = dataset("mlmRev", "Chem97")
+const barley = dataset("lattice", "barley")
+
 """
     explore()
 
 Convenience function for temporary exploration during development.
 """
 function explore()
-    chem97 = dataset("mlmRev", "Chem97")
+    # chem97 = dataset("mlmRev", "Chem97")
     # names(chem97)
     # freqtable(chem97, :Score)    # discrete
-    freqtable(chem97, :GCSEScore)  # continuous
+    # freqtable(chem97, :GCSEScore)  # continuous
     # gc97 = groupby(chem97, :Score)
     # combine(gc97, )
-end
 
+    show(names(barley))
+    println("\n")
+    sort(transform(barley, :Variety => ByRow(levelcode) => :levelcode), :levelcode) |> show
+    println("\n")
+    sort(transform(barley, :Site => ByRow(levelcode) => :levelcode), :levelcode) |> show
+    # show(stdout, "text/plain", sort(zip(unique(levelcode.(barley.Variety)), unique(barley.Variety)) |> collect))
+    # println("\n")
+    # show(describe(barley))
+    # println("\n")
+    # gbarley = groupby(barley, :Variety)
+    # barleyYieldSort = sort(combine(gbarley, :Yield => median => :medianYield), :medianYield, rev = true)
+    # show(barleyYieldSort)
+    # yieldLevels = reverse(barleyYieldSort.Variety)
+    # println("\n")
+    # ybarley = deepcopy(barley)
+    # levels!(ybarley.Variety, yieldLevels)
+    # show(stdout, "text/plain", sort(zip(unique(levelcode.(ybarley.Variety)), unique(ybarley.Variety)) |> collect))
+    # println("\n")
+    # show(levels(barley.Variety))
+    # println("\n")
+    # show(unique(levelcode.(barley.Variety)))
+end
 
 """
     rfig11()
