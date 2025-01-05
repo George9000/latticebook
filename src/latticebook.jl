@@ -10,12 +10,18 @@ export explore
 export rfig11, rfig12, rfig13, rfig14
 export gcsev1, gcsev2
 
+# Makie figure sizing
 const inch = 96
 const pt = 4 / 3
 const cm = inch / 2.54
 
+# datasets
 const chem97 = dataset("mlmRev", "Chem97")
 const barley = dataset("lattice", "barley")
+
+# fonts
+const usualf = "TheSansMonoCd Office"
+const labelsf = "TheSansMono Bold"
 
 """
     explore()
@@ -146,7 +152,7 @@ function gcsev2()
     gc97end = lastindex(indx)
     gc97labels = [string(k.Score) for k in keys(gc97)]
 
-    ptheme = Theme(; fontsize=8, fonts=(; regular="TheSansMonoCd Office", labelf = "TheSansMono Bold"))
+    ptheme = Theme(; fontsize=8, fonts=(; regular = usualf, labelf = labelsf))
     set_theme!(ptheme)
     fig = Figure()
     for i in indx
