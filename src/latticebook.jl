@@ -23,7 +23,6 @@ const barley = dataset("lattice", "barley")
 Convenience function for temporary exploration during development.
 """
 function explore()
-    # chem97 = dataset("mlmRev", "Chem97")
     # names(chem97)
     # freqtable(chem97, :Score)    # discrete
     # freqtable(chem97, :GCSEScore)  # continuous
@@ -124,7 +123,6 @@ end
 Generate fig11
 """
 function fig11v1()
-    chem97 = dataset("mlmRev", "Chem97")
     ptheme = Theme(; fontsize=8, fonts=(; regular="TheSansMonoCd Office"))
     set_theme!(ptheme)
     fig = Figure(; size=(6inch, 2.5inch))
@@ -142,27 +140,28 @@ end
 Generate fig11
 """
 function fig11v2()
-    chem97 = dataset("mlmRev", "Chem97")
     gc97 = groupby(chem97, :Score)
-    gc97length = length(gc97)
+    indx = eachindex(IndexLinear(), gc97)
+    gc97begin = firstindex(indx)
+    gc97end = lastindex(indx)
     kgc97 = keys(gc97)
     gc97labels = [string(k.Score) for k in keys(gc97)]
 
-    ptheme = Theme(; fontsize=8, fonts=(; regular="TheSansMonoCd Office"))
+    ptheme = Theme(; fontsize=8, fonts=(; regular="TheSansMonoCd Office", labelf = "TheSansMono Bold"))
     set_theme!(ptheme)
     fig = Figure()
-    for i in 1:gc97length
-        xlabel = (i == gc97length ? "GCSE Score" : "")
-        title = (i == 1 ? "Chem Score: "*gc97labels[i] : gc97labels[i])
-        xtvis = (i == gc97length ? true : false)
-        xt = (i == gc97length ? (0:2:8) : Float64[-1])
+    for i in indx
+        xlabel = (i == gc97end ? "GCSE Score" : "")
+        title = (i == gc97begin ? "Chem Score: "*gc97labels[i] : gc97labels[i])
+        xtvis = (i == gc97end ? true : false)
+        xt = (i == gc97end ? (0:2:8) : Float64[-1])
         ax = Axis(fig[i, 1], title = title,
                   titlealign= :left,
                   limits = ((0,8), (0, 0.8)),
                   xticks = xt, xticksvisible = xtvis,
-                  xlabel = xlabel)
+                  xlabel = xlabel, xlabelfont = :labelf, titlefont = :labelf)
         density!(ax, gc97[kgc97[i]].GCSEScore)
-        (i == gc97length ? continue : hidedecorations!.(ax, grid=false))
+        (i == gc97end ? continue : hidedecorations!(ax, grid=false))
     end
     rowgap!(fig.layout, 1)
     set_theme!()
