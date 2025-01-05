@@ -8,7 +8,7 @@ using Statistics
 
 export explore
 export rfig11, rfig12, rfig13, rfig14
-export fig11v1, fig11v2
+export gcsev1, gcsev2
 
 const inch = 96
 const pt = 4 / 3
@@ -118,11 +118,11 @@ function rfig14()
 end
 
 """
-    fig11v1()
+    gcsev1()
 
-Generate fig11
+Generate figure of GCSE scores vs Chem Scores
 """
-function fig11v1()
+function gcsev1()
     ptheme = Theme(; fontsize=8, fonts=(; regular="TheSansMonoCd Office"))
     set_theme!(ptheme)
     fig = Figure(; size=(6inch, 2.5inch))
@@ -131,20 +131,19 @@ function fig11v1()
     ax2 = Axis(fig[2, 1]; title="Chem Score Distribution", xticks = 0:2:10)
     hist!(ax2, chem97.Score, strokecolor = :black)
     set_theme!()
-    return save("figures/fig11v1.pdf", fig)
+    return save("figures/gcsev1.pdf", fig)
 end
 
 """
-    fig11v2()
+    gcsev2()
 
-Generate fig11
+Generate figure of GCSE scores vs Chem Scores
 """
-function fig11v2()
+function gcsev2()
     gc97 = groupby(chem97, :Score)
     indx = eachindex(IndexLinear(), gc97)
     gc97begin = firstindex(indx)
     gc97end = lastindex(indx)
-    kgc97 = keys(gc97)
     gc97labels = [string(k.Score) for k in keys(gc97)]
 
     ptheme = Theme(; fontsize=8, fonts=(; regular="TheSansMonoCd Office", labelf = "TheSansMono Bold"))
@@ -160,12 +159,12 @@ function fig11v2()
                   limits = ((0,8), (0, 0.8)),
                   xticks = xt, xticksvisible = xtvis,
                   xlabel = xlabel, xlabelfont = :labelf, titlefont = :labelf)
-        density!(ax, gc97[kgc97[i]].GCSEScore)
+        density!(ax, gc97[i].GCSEScore)
         (i == gc97end ? continue : hidedecorations!(ax, grid=false))
     end
     rowgap!(fig.layout, 1)
     set_theme!()
-    return save("figures/fig11v2.pdf", fig)
+    return save("figures/gcsev2.pdf", fig)
 end
 
 end # module latticebook

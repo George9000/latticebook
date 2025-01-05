@@ -1,2 +1,4 @@
 Manifest.toml
 *.sublime-*
+figures/*
+.DS_Store
